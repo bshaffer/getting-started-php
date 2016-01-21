@@ -41,7 +41,7 @@ service google-fluentd restart &
 # [START php]
 # Install PHP and dependencies from apt
 apt-get update
-apt-get install -y php5 nginx build-essential php5-fpm # libpcre3 libpcre3-dev zlib1g-dev
+apt-get install -y git nginx mongodb-clients php5 php5-fpm php5-mongo
 
 # Install composer
 curl -sS https://getcomposer.org/installer | \
@@ -64,7 +64,6 @@ composer install -d /opt/app/bookshelf --no-ansi --no-progress
 curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/project-config" \
   -H "Metadata-Flavor: Google" >> \
   /opt/app/bookshelf/config/settings.yml
-
 # [END project-config]
 
 # [START nginx]
