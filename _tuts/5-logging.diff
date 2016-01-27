@@ -45,7 +45,7 @@ index c9d19a9..6efc83e 100644
  // [START google_client]
  $app['google_client'] = function ($app) {
 diff --git a/src/controllers.php b/src/controllers.php
-index 6ae4fb5..07c50a0 100644
+index 9dd26b4..4314997 100644
 --- a/src/controllers.php
 +++ b/src/controllers.php
 @@ -159,6 +159,11 @@ $app->post('/books/{id}/delete', function ($id) use ($app) {
