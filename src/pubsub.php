@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
+ini_set('display_errors', 1);
+
 use Ratchet\Server\IoServer;
+use Google\Cloud\Pubsub\PubsubClient;
 use Google\Cloud\PubSub\Subscription;
 use Google\Cloud\Samples\Bookshelf\PubSub\AsyncConnection;
 use Google\Cloud\Samples\Bookshelf\PubSub\LookupBookDetailsJob;
@@ -29,6 +32,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = require __DIR__ . '/../src/app.php';
 $pubsub = $app['pubsub_client'];
+
+putenv('GOOGLE_APPLICATION_CREDENTIALS='.__DIR__.'/../getting-started-php-credentials.json');
 
 // Listen to port 8080 for our health checker
 $server = IoServer::factory(
@@ -44,7 +49,9 @@ $server->loop->addPeriodicTimer(0, function () use ($handler) {
 $client = new Client([
     'handler' => HandlerStack::create($handler)
 ]);
-$pubsub->connection = new AsyncConnection([], $client);
+$pubsub->connection = new AsyncConnection([
+    'scopes' => PubSubClient::FULL_CONTROL_SCOPE
+], $client);
 
 // create the topic/subscription if they do not exist.
 $topic = $pubsub->topic(Worker::TOPIC_NAME);

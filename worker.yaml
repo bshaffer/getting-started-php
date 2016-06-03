@@ -1,3 +1,4 @@
-runtime: php
+runtime: custom
 vm: true
-entrypoint: php src/worker.php
+service: worker
+entrypoint: ["pubsub_entrypoint.sh"]
