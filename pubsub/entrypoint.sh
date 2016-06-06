@@ -26,7 +26,7 @@ fi
 
 sed -i "s|%%DOC_ROOT%%|${DOCUMENT_ROOT}|g" $PHP_DIR/lib/php.ini
 
-# Move user-provided php.ini.
+# load pubsub-specific php.ini.
 mv "${APP_DIR}/pubsub/php.ini" "${PHP_DIR}/lib/conf.d"
 
 # start the process
