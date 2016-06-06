@@ -20,29 +20,14 @@
 
 set -xe
 
-## START supervisord.conf override ##
-cp ${APP_DIR}/supervisord.conf /etc/supervisor/supervisord.conf
-## END supervisord.conf override ##
-
-# Configure memcached based session.
-if [ -n ${MEMCACHE_PORT_11211_TCP_ADDR} ] && [ -n ${MEMCACHE_PORT_11211_TCP_PORT} ]; then
-    cat <<EOF > ${PHP_DIR}/lib/conf.d/memcached-session.ini
-session.save_handler=memcached
-session.save_path="${MEMCACHE_PORT_11211_TCP_ADDR}:${MEMCACHE_PORT_11211_TCP_PORT}"
-EOF
-fi
-
-# Configure document root in php.ini with DOCUMENT_ROOT
-# environment variable or APP_DIR if DOCUMENT_ROOT is not set.
-
 if [ -z "${DOCUMENT_ROOT}" ]; then
     DOCUMENT_ROOT=${APP_DIR}
 fi
 
 sed -i "s|%%DOC_ROOT%%|${DOCUMENT_ROOT}|g" $PHP_DIR/lib/php.ini
 
+# Move user-provided php.ini.
+mv "${APP_DIR}/pubsub/php.ini" "${PHP_DIR}/lib/conf.d"
+
 # start the process
-php ${APP_DIR}/src/pubsub.php
-
-# exec "$@"
-
+${PHP_DIR}/bin/php ${APP_DIR}/pubsub/worker.php

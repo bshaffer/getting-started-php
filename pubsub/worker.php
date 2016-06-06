@@ -17,6 +17,9 @@
 
 ini_set('display_errors', 1);
 
+putenv('GOOGLE_APPLICATION_CREDENTIALS='.__DIR__.'/../getting-started-php-credentials.json');
+
+use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Google\Cloud\Pubsub\PubsubClient;
 use Google\Cloud\PubSub\Subscription;
@@ -33,11 +36,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $app = require __DIR__ . '/../src/app.php';
 $pubsub = $app['pubsub_client'];
 
-putenv('GOOGLE_APPLICATION_CREDENTIALS='.__DIR__.'/../getting-started-php-credentials.json');
-
 // Listen to port 8080 for our health checker
 $server = IoServer::factory(
-    new HealthCheckListener(),
+    new HttpServer(new HealthCheckListener($app['monolog'])),
     8080
 );
 

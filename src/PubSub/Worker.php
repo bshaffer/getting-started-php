@@ -26,10 +26,12 @@ class Worker
         $thenFunc = function ($response) use ($job, $subscription) {
             $ackIds = [];
             $messages = json_decode($response->getBody(), true);
-            foreach ($messages['receivedMessages'] as $message) {
-                $attributes = $message['message']['attributes'];
-                $job->work($attributes['id']);
-                $ackIds[] = $message['ackId'];
+            if (isset($messages['receivedMessages'])) {
+                foreach ($messages['receivedMessages'] as $message) {
+                    $attributes = $message['message']['attributes'];
+                    $job->work($attributes['id']);
+                    $ackIds[] = $message['ackId'];
+                }
             }
 
             if (!empty($ackIds)) {

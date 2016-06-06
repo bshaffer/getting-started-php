@@ -2,28 +2,31 @@
 
 namespace Google\Cloud\Samples\Bookshelf\PubSub;
 
-use Ratchet\MessageComponentInterface;
+use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\Response;
+use Psr\Log\LoggerInterface;
+use Ratchet\Http\HttpServerInterface;
 use Ratchet\ConnectionInterface;
 
-class HealthCheckListener implements MessageComponentInterface
+class HealthCheckListener implements HttpServerInterface
 {
     private $logger;
 
-    public function __construct($logger = null)
+    public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
-    public function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
-        $this->log(sprintf('New connection: %s', $conn->resourceId));
+        // send the 200 OK health response and return
+        $response = new Response(200, ['Content-Length' => 0]);
+        $conn->send((string) $response);
+        $conn->close();
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
     {
-        // send the 200 OK health response and return
-        $from->send("HTTP/1.1 200 OK\n");
-        $from->close();
     }
 
     public function onClose(ConnectionInterface $conn)
