@@ -82,8 +82,6 @@ $app['google_client'] = function ($app) {
         'client_secret' => $app['config']['google_client_secret'],
     ]);
 
-    $client->setHttpClient(new GuzzleHttp\Client(['proxy' => 'localhost:8888', 'verify' => false]));
-
     return $client;
 };
 // [END google_client]
